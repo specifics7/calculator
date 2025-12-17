@@ -1,6 +1,7 @@
 const calculator = document.querySelector('.calculator');
 const keys = calculator.querySelector('.calculator-keys');
 const display = document.querySelector('.calculator-display');
+const expression = document.querySelector('.calculator-expression'); // NEW
 
 const calculate = (num1, operator, num2) => {
     let result = '';
@@ -16,6 +17,17 @@ const calculate = (num1, operator, num2) => {
     }
 
     return result;
+}
+
+// Helper function to get operator symbol
+const getOperatorSymbol = (operator) => {
+    const symbols = {
+        add: '+',
+        subtract: '-',
+        multiply: '×',
+        divide: '÷'
+    };
+    return symbols[operator] || '';
 }
 
 keys.addEventListener('click', e => {
@@ -42,7 +54,7 @@ keys.addEventListener('click', e => {
         }
 
         // Operator keys
-        if ( action === 'add' || action === 'subtract' || action === 'multiply' || action ===  'divide') {
+        if (action === 'add' || action === 'subtract' || action === 'multiply' || action === 'divide') {
             const firstValue = calculator.dataset.firstValue;
             const operator = calculator.dataset.operator;
             const secondValue = displayedNum;
@@ -50,22 +62,22 @@ keys.addEventListener('click', e => {
             if (firstValue && operator && previousKeyType !== 'operator' && previousKeyType !== 'calculate') {
                 const calcValue = calculate(firstValue, operator, secondValue);
                 display.textContent = calcValue;
-                // Update calculated value as firstValue
                 calculator.dataset.firstValue = calcValue;
             } else {
-                // If there are no calculations, set displayedNum as the firstValue
                 calculator.dataset.firstValue = displayedNum;
             }
             
-            
-            key.classList.add('is-depressed'); // add class to operator key so user knows operator is active
+            key.classList.add('is-depressed');
             calculator.dataset.previousKeyType = 'operator';
             calculator.dataset.operator = action;
+            
+            // Update expression display
+            expression.textContent = `${calculator.dataset.firstValue} ${getOperatorSymbol(action)}`;
         }
 
         // Decimal key
         if (action === 'decimal') {
-            if (!displayedNum.includes('.')) { // Check if there is already a decimal
+            if (!displayedNum.includes('.')) {
                 display.textContent = displayedNum + '.';
             } else if (previousKeyType === 'operator' || previousKeyType === 'calculate') {
                 display.textContent = '0.';
@@ -75,21 +87,16 @@ keys.addEventListener('click', e => {
 
         // Clear key
         if (action === 'clear') {
-            // Always clear everything
             delete calculator.dataset.firstValue;
             delete calculator.dataset.modValue;
             delete calculator.dataset.operator;
             delete calculator.dataset.previousKeyType;
             
             display.textContent = 0;
+            expression.textContent = ''; // Clear expression
             calculator.dataset.previousKeyType = 'clear';
-            key.textContent = 'AC'; // Reset button text
+            key.textContent = 'AC';
         }
-
-        // if (action !== 'clear') {
-        //     const clearButton = calculator.querySelector('[data-action=clear]');
-        //     clearButton.textContent = 'CE';
-        // }
 
         // Equal key
         if (action === 'calculate') {
@@ -100,12 +107,17 @@ keys.addEventListener('click', e => {
             if (firstValue) {
                 if (previousKeyType === 'calculate') {
                     firstValue = displayedNum;
-                    secondValue = calculator.dataset.modValue
+                    secondValue = calculator.dataset.modValue;
                 }
-                display.textContent = calculate(firstValue, operator, secondValue);
+                
+                const result = calculate(firstValue, operator, secondValue);
+                
+                // Show full expression before calculating
+                expression.textContent = `${firstValue} ${getOperatorSymbol(operator)} ${secondValue} =`;
+                
+                display.textContent = result;
             }
 
-            // Set modValue attribute
             calculator.dataset.modValue = secondValue;
             calculator.dataset.previousKeyType = 'calculate';
         }
