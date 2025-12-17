@@ -16,7 +16,36 @@ const calculate = (num1, operator, num2) => {
         result = parseFloat(num1) / parseFloat(num2);
     }
 
-    return result;
+    return formatDisplayNumber(result);
+}
+
+const formatDisplayNumber = (number) => {
+    // Convert to number if it's a string
+    const num = parseFloat(number);
+    
+    // Handle special cases
+    if (isNaN(num)) return '0';
+    if (!isFinite(num)) return 'Error';
+    
+    // Convert to string to check length
+    const numStr = num.toString();
+    
+    // If the number fits (including decimal point), show it as is
+    if (numStr.length <= 12) {
+        return numStr;
+    }
+    
+    // If it's a very large or very small number, use exponential notation
+    if (Math.abs(num) >= 1e10 || (Math.abs(num) < 0.001 && num !== 0)) {
+        return num.toExponential(6);
+    }
+    
+    // For long decimals, round to fit the display
+    // Calculate how many decimal places we can show
+    const integerPart = Math.floor(Math.abs(num)).toString().length;
+    const decimalPlaces = Math.max(0, 12 - integerPart - 1); // -1 for decimal point
+    
+    return num.toFixed(decimalPlaces);
 }
 
 // Helper function to get operator symbol
