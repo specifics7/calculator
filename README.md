@@ -12,4 +12,4 @@ A retro-styled calculator web application. Built with vanilla JavaScript, HTML, 
 - **Chain calculations**: Perform multiple operations in sequence
 - **Smart number formatting**: Handles long numbers and repeating decimals
 
-Website Link: https://specifics7.github.io/etch-a-sketch/
+Website Link: https://specifics7.github.io/calculator/
