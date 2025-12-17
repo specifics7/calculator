@@ -89,6 +89,15 @@ button:active {
     color: #fff;
 }
 
+.key--operator.is-depressed {
+  background: #4b3a5a;
+  transform: translateY(2px);
+  box-shadow: 
+    0 2px 0 #2a2a2a,
+    0 3px 4px rgba(0, 0, 0, 0.3);
+  border: 2px solid #9b8aaa;
+}
+
 .key--equal {
   background: #8b1e3f;
   grid-column: span 2;
